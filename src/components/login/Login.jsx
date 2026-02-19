@@ -1,57 +1,77 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import ForgetPassword from "./ForgetPassword";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const navigate = useNavigate()
+
+  const navigate = useNavigate();
 
   function handelLogin() {
-    console.log(name);
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser.user === user && savedUser.password === password) {
+      navigate("/logged");
+    } else {
+      console.log("Wrong Credentials");
+    }
+
     console.log(user);
     console.log(password);
   }
 
   return (
-    <div className="flex bg-blue-200 flex-col justify-center items-center max-h-full h-screen">
-      {/* header part */}
-      <h2 className="font-bold text-5xl">Welcome to Login Page</h2>
-      {/* login credentioal section */}
-      <div className="flex mt-3 flex-col justify-center items-center ">
-        <input
-          className="text-center bg-gray-500 text-white border-none rounded-l mt-1 text-2xl"
-          onChange={(e) => setName(e.target.value)}
-          value={name}
-          type="text"
-          placeholder="Enter Full Name"
-        />
-        <input
-          className="text-center bg-gray-500 text-white border-none rounded-l mt-1 text-2xl"
-          type="text"
-          onChange={(e) => setUser(e.target.value)}
-          value={user}
-          placeholder="enter username"
-        />
-        <input
-          className="text-center bg-gray-500 text-white border-none rounded-l mt-1 text-2xl"
-          type="password"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          placeholder="Enter Password"
-        />
+    <div className="flex bg-linear-to-br from-blue-100 to-violet-200 flex-col justify-center items-center h-screen px-4">
+      <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md flex flex-col gap-5">
+        <div className="text-center mb-2">
+          <h2 className="font-bold text-4xl text-gray-800">Welcome Back!</h2>
+          <p className="text-gray-400 text-sm mt-1">Login to your account</p>
+        </div>
+
+        <div className="flex flex-col gap-1"></div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-500 text-sm font-medium">Username</label>
+          <input
+            className="bg-gray-100 text-gray-800 border-none outline-none rounded-xl p-3 text-base w-full"
+            onChange={(e) => setUser(e.target.value)}
+            value={user}
+            type="text"
+            placeholder="Enter Username"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-500 text-sm font-medium">Password</label>
+          <input
+            className="bg-gray-100 text-gray-800 border-none outline-none rounded-xl p-3 text-base w-full"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            type="password"
+            placeholder="Enter Password"
+          />
+        </div>
+
         <button
-          className="my-3 bg-violet-400 px-3 py-1 rounded-xl "
+          className="bg-violet-500 hover:bg-violet-600 transition-colors text-white text-lg font-semibold rounded-2xl py-3 w-full mt-2"
           onClick={handelLogin}
         >
           Login
         </button>
-      </div>
-      {/* forget section  */}
-      <div className="flex  flex-col justify-center gap-2 items-center ">
-        <button onClick={() => navigate("/forget-password")}>Forget Password ?</button>
-        <button>Sign up</button>
+
+        <div className="flex justify-between text-sm text-violet-500 mt-1">
+          <button
+            onClick={() => navigate("/forget-password")}
+            className="hover:underline"
+          >
+            Forgot Password?
+          </button>
+          <button
+            className="hover:underline"
+            onClick={() => navigate("/signup")}
+          >
+            Sign Up
+          </button>
+        </div>
       </div>
     </div>
   );

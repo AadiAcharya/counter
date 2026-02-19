@@ -19,11 +19,11 @@ function App() {
   <Route path="/login" element={<Login/>} />
   <Route path='/forget-password' element={<ForgetPassword/>}/>
   <Route path='/signup' element={<SignUp/>} />
-  <Route path='/loged' element={<Logged/>}/>
+  <Route path='/logged' element={<Logged/>}/>
   <Route path=''/>
   <Route path=''/>
   <Route path=''/>
-  <Route path=''/>
+
  
 </Routes>
 

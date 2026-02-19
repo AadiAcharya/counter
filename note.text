@@ -1,0 +1,7 @@
+function handleSubmit(){
+  if(userInput == verificationCode){
+    console.log("correct!")
+  } else {
+    console.log("wrong code!")
+  }
+}
