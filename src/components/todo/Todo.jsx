@@ -2,20 +2,17 @@ import { useState, useEffect } from "react";
 
 const Todo = () => {
   const [todos, setTodos] = useState(["Eat Food", "sleep"]);
-  const [deleteTodo, setDeleteTodo] = useState("")
+
   const [newTodo, setNewTodo] = useState("");
 
   function myTodo() {
     setTodos([...todos, newTodo]);
-    setNewTodo("")
+    setNewTodo("");
   }
-  function remove (index){
-    setDeleteTodo(todos.filter(
-      if(index !== todos.index){
-        setNewTodo("")
-      }
-    ))
-    console.log('hi')
+  function remove(index) {
+    setTodos(todos.filter((_, i) => i !== index));
+
+    console.log("hi");
   }
 
   return (
@@ -33,11 +30,13 @@ const Todo = () => {
             className="bg-gray-100 text-gray-800 outline-none rounded-xl p-3 text-base flex-1"
             type="text"
             value={newTodo}
-            onChange={(e)=> setNewTodo(e.target.value)}
-            
+            onChange={(e) => setNewTodo(e.target.value)}
             placeholder="Enter your todo..."
           />
-          <button className="bg-violet-500 hover:bg-violet-600 transition-colors text-white font-semibold rounded-xl px-5" onClick={myTodo}>
+          <button
+            className="bg-violet-500 hover:bg-violet-600 transition-colors text-white font-semibold rounded-xl px-5"
+            onClick={myTodo}
+          >
             Add
           </button>
         </div>
@@ -55,15 +54,21 @@ const Todo = () => {
         </div>
 
         <div className="flex flex-col gap-3 mt-2">
-          {todos.map(( todo, index ) => (
-            <div key={index} className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
-              <div  className="flex items-center gap-3">
-                <input  type="checkbox" className="w-4 h-4 accent-violet-500" />
+          {todos.map((todo, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between bg-gray-50 rounded-xl p-4"
+            >
+              <div className="flex items-center gap-3">
+                <input type="checkbox" className="w-4 h-4 accent-violet-500" />
                 <span className="text-gray-700 text-base todo-item">
                   {todo}
                 </span>
               </div>
-              <button className="text-red-400 hover:text-red-600 transition-colors text-sm font-medium" onClick={remove} >
+              <button
+                className="text-red-400 hover:text-red-600 transition-colors text-sm font-medium"
+                onClick={()=> remove(index)}
+              >
                 Delete
               </button>
             </div>
