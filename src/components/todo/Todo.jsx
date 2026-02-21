@@ -90,7 +90,7 @@ const Todo = () => {
         <div className="flex justify-between text-sm text-gray-400 mt-2">
           <span>2 items left</span>
           <button className="hover:text-red-400 transition-colors">
-            Clear Completed
+            Clear Complete
           </button>
         </div>
       </div>
