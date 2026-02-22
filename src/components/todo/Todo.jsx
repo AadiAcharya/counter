@@ -1,13 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const Todo = () => {
-  const [todos, setTodos] = useState(["Eat Food", "sleep"]);
+  const [todos, setTodos] = useState([
+    {id:1, text:"eat food", completed: false },
+    {id:2, text:"sleep", completed: false }
+  ]);
 
   const [newTodo, setNewTodo] = useState("");
 
   function myTodo() {
-    setTodos([...todos, newTodo]);
+    setTodos([...todos, {id:crypto.randomUUID(), item:newTodo, completed:false}]);
     setNewTodo("");
+
   }
   function remove(index) {
     setTodos(todos.filter((_, i) => i !== index));
@@ -62,7 +66,7 @@ const Todo = () => {
               <div className="flex items-center gap-3">
                 <input type="checkbox" className="w-4 h-4 accent-violet-500" />
                 <span className="text-gray-700 text-base todo-item">
-                  {todo}
+                  {todo.text}
                 </span>
               </div>
               <button
