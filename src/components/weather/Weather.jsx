@@ -126,7 +126,7 @@ const Weather = () => {
 
       {/* FAVORITES SECTION */}
       <div className="w-full max-w-lg mt-6">
-        <h3 className="text-white font-semibold mb-3">⭐ Favories</h3>
+        <h3 className="text-white font-semibold mb-3">⭐ Favorites</h3>
         <div className="flex gap-2 flex-wrap">
           <button className="bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-200 text-sm rounded-xl px-3 py-1.5 transition-colors border border-yellow-400/30"
           onClick={()=>  loadData("Paris")}
