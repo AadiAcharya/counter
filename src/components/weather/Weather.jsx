@@ -117,7 +117,7 @@ const Weather = () => {
               <p className="text-2xl font-bold">{weather.main.feels_like}°</p>
             </div>
             <div className="bg-white/10 rounded-2xl p-4">
-              <p className="text-blue-300 text-xs mb-1">Visibility</p>
+              <p className="text-blue-300 text-xs mb-1">Visiblity</p>
               <p className="text-2xl font-bold">{(weather.visibility)/1000} km</p>
             </div>
           </div>
