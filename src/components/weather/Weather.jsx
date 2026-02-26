@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // f76c766b5396d90857c84cef321721af
 
 // const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=f76c766b5396d90857c84cef321721af&units=metric`
@@ -14,6 +14,8 @@ const Weather = () => {
   const [isCelsius, setIsCelsius] = useState(true);
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
+  const [favorites, setFavorites] = useState([]);
+  const [recentCities, setRecentCities] = useState([])
   const [error, setError] = useState("");
 
   async function loadData(city) {
@@ -22,9 +24,26 @@ const Weather = () => {
     );
     const data = await response.json();
     setWeather(data);
-    console.log(data)
+    console.log(data);
+  }
+  function addFavorites(cityName) {
+    if (!favorites.includes(cityName)) {
+      setFavorites([...favorites, cityName]);
+    }
   }
 
+  useEffect(()=> {
+    if(favorites.length > 0 ){
+   localStorage.setItem("favorites" , JSON.stringify(favorites))
+
+    }
+  }, [favorites])
+
+  useEffect(()=> {
+    const saved = localStorage.getItem("favorites")
+    console.log(saved)
+    if(saved) setFavorites(JSON.parse(saved))
+  },[])
 
 
 
@@ -46,10 +65,13 @@ const Weather = () => {
           type="text"
           value={city}
           onChange={(e) => setCity(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && loadData(city)}
           placeholder="Enter city name..."
         />
-        <button className="bg-sky-500 hover:bg-sky-400 transition-colors text-white font-semibold rounded-2xl px-6" 
-        onClick={()=>loadData(city)}>
+        <button
+          className="bg-sky-500 hover:bg-sky-400 transition-colors text-white font-semibold rounded-2xl px-6"
+          onClick={() => loadData(city)}
+        >
           Search
         </button>
       </div>
@@ -73,22 +95,32 @@ const Weather = () => {
       </div>
 
       {/* WEATHER CARD */}
-   
-      { weather && (
-        <div key={weather.id} className="bg-white/10 backdrop-blur border border-white/20 rounded-3xl p-8 w-full max-w-lg text-white">
+
+      {weather && (
+        <div
+          key={weather.id}
+          className="bg-white/10 backdrop-blur border border-white/20 rounded-3xl p-8 w-full max-w-lg text-white"
+        >
           {/* CITY NAME + FAVORITE BUTTON */}
           <div className="flex justify-between items-start mb-4">
             <div>
               <h2 className="text-4xl font-bold">{weather.name}</h2>
               <p className="text-blue-300 text-sm">{weather.sys.country}</p>
             </div>
-            <button className="text-2xl">☆</button>
+            <button
+              className="text-2xl"
+              onClick={() => addFavorites(weather.name)}
+            >
+              ☆
+            </button>
           </div>
 
           {/* TEMPERATURE */}
           <div className="flex items-center justify-between mb-6">
             <div>
-              <p className="text-7xl font-bold">{weather.main.temp}°{isCelsius ? "C" : "F"}</p>
+              <p className="text-7xl font-bold">
+                {weather.main.temp}°{isCelsius ? "C" : "F"}
+              </p>
               <p className="text-blue-200 capitalize mt-1">partly cloudy</p>
             </div>
             <div className="text-8xl">⛅</div>
@@ -117,26 +149,30 @@ const Weather = () => {
               <p className="text-2xl font-bold">{weather.main.feels_like}°</p>
             </div>
             <div className="bg-white/10 rounded-2xl p-4">
-              <p className="text-blue-300 text-xs mb-1">Visiblity</p>
-              <p className="text-2xl font-bold">{(weather.visibility)/1000} km</p>
+              <p className="text-blue-300 text-xs mb-1">Visibility</p>
+              <p className="text-2xl font-bold">
+                {weather.visibility / 1000} km
+              </p>
             </div>
           </div>
         </div>
       )}
 
       {/* FAVORITES SECTION */}
+
       <div className="w-full max-w-lg mt-6">
         <h3 className="text-white font-semibold mb-3">⭐ Favorites</h3>
         <div className="flex gap-2 flex-wrap">
-          <button className="bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-200 text-sm rounded-xl px-3 py-1.5 transition-colors border border-yellow-400/30"
-          onClick={()=>  loadData("Paris")}
-          
-          >
-            Paris
-          </button>
-          <button className="bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-200 text-sm rounded-xl px-3 py-1.5 transition-colors border border-yellow-400/30">
-            Dubai
-          </button>
+          {favorites.map((fav, index) => (
+            <button
+              key={index}
+              onClick={() => loadData(fav)}
+              className="bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-200 text-sm rounded-xl px-3 py-1.5 transition-colors border border-yellow-400/30"
+            >
+              {fav}
+            </button>
+          ))}
+        
         </div>
       </div>
     </div>
