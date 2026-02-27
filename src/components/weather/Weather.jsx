@@ -15,7 +15,7 @@ const Weather = () => {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [favorites, setFavorites] = useState([]);
-  const [recentCities, setRecentCities] = useState([])
+  const [recentCities, setRecentCities] = useState([]);
   const [error, setError] = useState("");
 
   async function loadData(city) {
@@ -32,20 +32,22 @@ const Weather = () => {
     }
   }
 
-  useEffect(()=> {
-    if(favorites.length > 0 ){
-   localStorage.setItem("favorites" , JSON.stringify(favorites))
-
+  useEffect(() => {
+    if (favorites.length > 0) {
+      localStorage.setItem("favorites", JSON.stringify(favorites));
     }
-  }, [favorites])
+  }, [favorites]);
 
-  useEffect(()=> {
-    const saved = localStorage.getItem("favorites")
-    console.log(saved)
-    if(saved) setFavorites(JSON.parse(saved))
-  },[])
+  useEffect(() => {
+    const saved = localStorage.getItem("favorites");
+    console.log(saved);
+    // eslint-disable-next-line
+    if (saved) setFavorites(JSON.parse(saved));
+  }, []);
 
-
+  useEffect(() => {
+    const recent = localStorage.getItem("favorites");
+  });
 
   return (
     <div className="min-h-screen bg-linear-to-br from-sky-900 via-blue-800 to-indigo-900 flex flex-col items-center px-4 py-10">
@@ -83,15 +85,17 @@ const Weather = () => {
 
       {/* RECENT SEARCHES */}
       <div className="flex gap-2 flex-wrap justify-center mb-6">
-        <button className="bg-white/10 hover:bg-white/20 text-white text-sm rounded-xl px-3 py-1.5 transition-colors border border-white/20">
-          London
-        </button>
-        <button className="bg-white/10 hover:bg-white/20 text-white text-sm rounded-xl px-3 py-1.5 transition-colors border border-white/20">
-          Tokyo
-        </button>
-        <button className="bg-white/10 hover:bg-white/20 text-white text-sm rounded-xl px-3 py-1.5 transition-colors border border-white/20">
-          New York
-        </button>
+        {recentCities.slice(-3).map((city, index) => (
+          <button
+            key={index}
+            onClick={() => loadData(city)}
+            className="bg-white/10 hover:bg-white/20 text-white text-sm rounded-xl px-3 py-1.5 transition-colors border border-white/20"
+          >
+            {city}
+          </button>
+        ))}
+
+        
       </div>
 
       {/* WEATHER CARD */}
@@ -172,7 +176,6 @@ const Weather = () => {
               {fav}
             </button>
           ))}
-        
         </div>
       </div>
     </div>
