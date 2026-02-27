@@ -1,14 +1,6 @@
 import { useState, useEffect } from "react";
-// f76c766b5396d90857c84cef321721af
 
-// const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=f76c766b5396d90857c84cef321721af&units=metric`
-
-// fetchwether-useeffect
 // fetchbylocation
-//converttemp
-//savetorecent
-// loadreceant
-//handelfavorite
 
 const Weather = () => {
   const [isCelsius, setIsCelsius] = useState(true);
@@ -24,8 +16,22 @@ const Weather = () => {
     );
     const data = await response.json();
     setWeather(data);
+    saveToRecent(city);
     console.log(data);
   }
+
+  async function fetchByLocation() {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=f76c766b5396d90857c84cef321721af&units=metric`,
+      );
+      const data = await response.json();
+      setWeather(data);
+    });
+  }
+
   function addFavorites(cityName) {
     if (!favorites.includes(cityName)) {
       setFavorites([...favorites, cityName]);
@@ -46,8 +52,22 @@ const Weather = () => {
   }, []);
 
   useEffect(() => {
-    const recent = localStorage.getItem("favorites");
-  });
+    if (!recentCities.length > 0) {
+      localStorage.setItem("recentCities", JSON.stringify(recentCities));
+    }
+  }, [recentCities]);
+
+  useEffect(() => {
+    const recent = localStorage.getItem("recentCities");
+    // eslint-disable-next-line
+    if (recent) setRecentCities(JSON.parse(recent));
+  }, []);
+
+  function saveToRecent(cityName) {
+    if (!recentCities.includes(cityName)) {
+      setRecentCities([...recentCities, cityName]);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-sky-900 via-blue-800 to-indigo-900 flex flex-col items-center px-4 py-10">
@@ -60,7 +80,6 @@ const Weather = () => {
         </p>
       </div>
 
-      {/* SEARCH BAR */}
       <div className="flex gap-2 w-full max-w-lg mb-4">
         <input
           className="flex-1 bg-white/10 backdrop-blur text-white outline-none rounded-2xl p-4 placeholder-blue-300 border border-white/20"
@@ -78,12 +97,13 @@ const Weather = () => {
         </button>
       </div>
 
-      {/* USE MY LOCATION BUTTON */}
-      <button className="text-blue-300 hover:text-white text-sm mb-6 underline transition-colors">
+      <button
+        onClick={fetchByLocation}
+        className="text-blue-300 hover:text-white text-sm mb-6 underline transition-colors"
+      >
         Use my current location
       </button>
 
-      {/* RECENT SEARCHES */}
       <div className="flex gap-2 flex-wrap justify-center mb-6">
         {recentCities.slice(-3).map((city, index) => (
           <button
@@ -94,18 +114,13 @@ const Weather = () => {
             {city}
           </button>
         ))}
-
-        
       </div>
-
-      {/* WEATHER CARD */}
 
       {weather && (
         <div
           key={weather.id}
           className="bg-white/10 backdrop-blur border border-white/20 rounded-3xl p-8 w-full max-w-lg text-white"
         >
-          {/* CITY NAME + FAVORITE BUTTON */}
           <div className="flex justify-between items-start mb-4">
             <div>
               <h2 className="text-4xl font-bold">{weather.name}</h2>
@@ -119,11 +134,13 @@ const Weather = () => {
             </button>
           </div>
 
-          {/* TEMPERATURE */}
           <div className="flex items-center justify-between mb-6">
             <div>
               <p className="text-7xl font-bold">
-                {weather.main.temp}°{isCelsius ? "C" : "F"}
+                {isCelsius
+                  ? weather.main.temp
+                  : ((weather.main.temp * 9) / 5 + 32).toFixed(2)}{" "}
+                °{isCelsius ? "C" : "F"}
               </p>
               <p className="text-blue-200 capitalize mt-1">partly cloudy</p>
             </div>
@@ -138,7 +155,6 @@ const Weather = () => {
             Switch to {isCelsius ? "Fahrenheit" : "Celsius"}
           </button>
 
-          {/* WEATHER DETAILS GRID */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white/10 rounded-2xl p-4">
               <p className="text-blue-300 text-xs mb-1">Humidity</p>
@@ -161,8 +177,6 @@ const Weather = () => {
           </div>
         </div>
       )}
-
-      {/* FAVORITES SECTION */}
 
       <div className="w-full max-w-lg mt-6">
         <h3 className="text-white font-semibold mb-3">⭐ Favorites</h3>
