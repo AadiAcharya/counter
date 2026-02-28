@@ -8,7 +8,7 @@ const Weather = () => {
   const [weather, setWeather] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [recentCities, setRecentCities] = useState([]);
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
 
   async function loadData(city) {
     const response = await fetch(
@@ -19,6 +19,16 @@ const Weather = () => {
     saveToRecent(city);
     console.log(data);
   }
+  function saveToRecent(cityName) {
+    if (!recentCities.includes(cityName)) {
+      setRecentCities([...recentCities, cityName]);
+    }
+  }
+  useEffect(() => {
+    // eslint-disable-next-line
+    loadData("Kathmandu");
+    // eslint-disable-next-line
+  }, []);
 
   async function fetchByLocation() {
     navigator.geolocation.getCurrentPosition(async (position) => {
@@ -62,12 +72,6 @@ const Weather = () => {
     // eslint-disable-next-line
     if (recent) setRecentCities(JSON.parse(recent));
   }, []);
-
-  function saveToRecent(cityName) {
-    if (!recentCities.includes(cityName)) {
-      setRecentCities([...recentCities, cityName]);
-    }
-  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-sky-900 via-blue-800 to-indigo-900 flex flex-col items-center px-4 py-10">
@@ -126,11 +130,12 @@ const Weather = () => {
               <h2 className="text-4xl font-bold">{weather.name}</h2>
               <p className="text-blue-300 text-sm">{weather.sys.country}</p>
             </div>
+
             <button
               className="text-2xl"
               onClick={() => addFavorites(weather.name)}
             >
-              ☆
+              {favorites.includes(weather.name) ? "⭐" : "☆"}
             </button>
           </div>
 
@@ -142,7 +147,9 @@ const Weather = () => {
                   : ((weather.main.temp * 9) / 5 + 32).toFixed(2)}{" "}
                 °{isCelsius ? "C" : "F"}
               </p>
-              <p className="text-blue-200 capitalize mt-1">partly cloudy</p>
+              <p className="text-blue-200 capitalize mt-1">
+                {weather.weather[0].description}
+              </p>
             </div>
             <div className="text-8xl">⛅</div>
           </div>
